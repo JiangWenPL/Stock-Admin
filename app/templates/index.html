@@ -1,0 +1,43 @@
+{% set current_page = "总览" %}
+
+{% extends 'base.html' %}
+
+{% block body %}
+<h3>{{username}} 您好</h3>
+<h4>以下是您的操作权限:</h4>
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-smile-o"></i> 操作权限列表
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>授权代码</th>
+                    <th>授权用户</th>
+                    <th>股票代码</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>授权代码</th>
+                    <th>授权用户</th>
+                    <th>股票代码</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for row in auth_list %}
+                <tr class={{ loop.cycle("", "table-active")}}>
+                <td>{{ row.auth_id }}</td>
+                <td>{{ row.admin_id }}</td>
+                <td>{{ row.stock_id }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+</div>
+{% endblock%}

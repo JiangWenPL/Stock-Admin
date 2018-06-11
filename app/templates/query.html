@@ -1,0 +1,123 @@
+{% set current_page = "股票查询" %}
+
+{% extends 'base.html' %}
+
+{% block body %}
+<h3>{{username}} 您好</h3>
+<h4>请输入股票代码进行查询</h4>
+<div class="container">
+    <div class="col-sm-12 column">
+        <div class="row clearfix">
+            <div class="col-sm-4 column">
+                <form class="form-inline my-2 my-lg-0 mr-lg-2" action="{{url_for('query')}}">
+                    <div class="input-group">
+                        <input class="form-control" type="text" name="stock_id" placeholder="搜索...">
+                        <span class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                          <i class="fa fa-search"></i>
+                        </button>
+                         </span>
+                    </div>
+                </form>
+            </div>
+            <!--<div class="col-sm-4 column">-->
+            <div class="col-sm-4 text-center my-auto ">
+                <div class="h4 mb-0 text-primary">¥34.69</div>
+                <div class="small text-muted">最新成交价格</div>
+            </div>
+            <!--</div>-->
+            <!--<div class="col-sm-4 column">-->
+            <div class="col-sm-4 text-center my-auto ">
+                <div class="h4 mb-1 text-warning">18,474</div>
+                <div class="small text-muted">成交股数</div>
+            </div>
+            <!--</div>-->
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active show" data-toggle="tab" href="#single">买入指令</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#group">卖出指令</a>
+                </li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade active show" id="single">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>价格 ¥</th>
+                                        <th>股数</th>
+                                        <th>时间</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>价格 ¥</th>
+                                        <th>股数</th>
+                                        <th>时间</th>
+                                    </tr>
+                                    </tfoot>
+                                    <tbody>
+                                    {% for row in buy %}
+                                    <tr class={{ loop.cycle(
+                                    "", "table-active")}}>
+                                    <td>{{ row.stock_price }}</td>
+                                    <td>{{ row.stock_num }}</td>
+                                    <td>{{ row.time }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="group">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable1" width="100%"
+                                       cellspacing="0">
+                                    <thead>
+                                    <tr>
+                                        <th>价格 ¥</th>
+                                        <th>股数</th>
+                                        <th>时间</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>价格 ¥</th>
+                                        <th>股数</th>
+                                        <th>时间</th>
+                                    </tr>
+                                    </tfoot>
+                                    <tbody>
+                                    {% for row in sell %}
+                                    <tr class={{ loop.cycle(
+                                    "", "table-active")}}>
+                                    <td>{{ row.stock_price }}</td>
+                                    <td>{{ row.stock_num }}</td>
+                                    <td>{{ row.time }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}
