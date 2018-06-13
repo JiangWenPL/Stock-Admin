@@ -1,7 +1,7 @@
 # 引入Form基类
 from flask_wtf import FlaskForm
 # 引入Form元素父类
-from wtforms import StringField, PasswordField, BooleanField, IntegerField, FloatField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, IntegerField, FloatField, SelectField, DecimalField
 # 引入Form验证父类
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
@@ -22,6 +22,28 @@ class ChangePWDForm ( FlaskForm ):
     username = StringField ( "username", validators=[DataRequired ()] )
     old_password = PasswordField ( 'passsword', validators=[DataRequired ()] )
     new_password = PasswordField ( 'passsword', validators=[DataRequired ()] )
+
+
+class ConfineForm ( FlaskForm ):
+    stock_name = StringField ( "stock_name", validators=[DataRequired ()] )
+    down_confine = DecimalField ( "down_confine", validators=[DataRequired ()] )
+    up_confine = DecimalField ( "up_confine", validators=[DataRequired ()] )
+
+
+class ChangeAuth ( FlaskForm ):
+    admin_id = StringField ( "admin_id", validators=[DataRequired ()] )
+    stock_name = StringField ( "stock_name", validators=[DataRequired ()] )
+    # action = StringField ( "action", validators=[DataRequired ()])
+    action = SelectField ( "action", validators=[DataRequired ()],
+                           choices=[("add", 'add'), ("delete", "delete")] )
+
+
+class ChangeAccount ( FlaskForm ):
+    admin_id = StringField ( "admin_id", validators=[DataRequired ()] )
+    password = StringField ( "password", validators=[Optional ()] )
+    is_root = BooleanField ( "is_root", validators=[Optional ()], default=False )
+    action = SelectField ( "action", validators=[DataRequired ()],
+                           choices=[("add", 'add'), ("delete", "delete"), ("update", "update")] )
 
 # class CheckInForm ( FlaskForm ):
 #     bookID = StringField ( "bookID", validators=[DataRequired ()] )

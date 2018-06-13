@@ -20,6 +20,7 @@ class Admin ( db.Model ):
     __tablename__ = "admin"
     id = db.Column ( db.String ( 32 ), primary_key=True )
     password_hash = db.Column ( db.String ( 32 ) )
+    is_root = db.Column ( db.Boolean, default=False )
 
     def is_authenticated(self):
         return True
@@ -33,9 +34,12 @@ class Admin ( db.Model ):
     def get_id(self):
         return self.id
 
-    def __init__(self, id, password, ):
+    def __init__(self, id, password, is_root=False):
         self.id = id
         self.password = password
+        self.is_root = is_root
+        if id == 'Alice':
+            self.is_root = True
 
     @property
     def password(self):
@@ -56,8 +60,8 @@ class Admin ( db.Model ):
 class Auth ( db.Model ):
     __tablename__ = "auth"
     auth_id = db.Column ( db.Integer, primary_key=True, autoincrement=True )
-    stock_id = db.Column ( db.String ( 32 ), db.ForeignKey ( 'stock.stock_name' ), index=True )
-    admin_id = db.Column ( db.String ( 32 ), db.ForeignKey ( 'admin.id' ) )
+    stock_id = db.Column ( db.String ( 32 ), db.ForeignKey ( 'stock.stock_name', ondelete='CASCADE' ), index=True )
+    admin_id = db.Column ( db.String ( 32 ), db.ForeignKey ( 'admin.id', ondelete='CASCADE' ) )
 
     def __init__(self, admin_id, stock_id):
         self.stock_id = stock_id
@@ -72,14 +76,17 @@ class Stock ( db.Model ):
     __tablename__ = "stock"
     stock_id = db.Column ( db.Integer, primary_key=True, autoincrement=True )
     stock_name = db.Column ( db.String ( 40 ), index=True )
-    is_trading = db.Column ( db.Boolean, default=False )
+    is_trading = db.Column ( db.Boolean, default=True )
+    up_confine = db.Column ( db.DECIMAL ( 7, 2 ), default=10 )
+    down_confine = db.Column ( db.DECIMAL ( 7, 2 ), default=10 )
 
     def __init__(self, stock_name):
         self.stock_name = stock_name
 
     # For debug
     def __repr__(self):
-        return '<auth_id %r: %r %r>' % (self.auth_id, self.stock_id, self.admin_id)
+        return '<stock: %r: %r %r %r %r>' % (
+            self.stock_id, self.stock_name, self.is_trading, self.down_confine, self.up_confine)
 
 
 class Buy ( db.Model ):
@@ -146,6 +153,8 @@ def test_init():
             db.session.add ( Buy ( buy[0], buy[1], buy[2] ) )
         for tran in db_dict['tran']:
             db.session.add ( Tran ( tran[0], tran[1], tran[1] ) )
+        for stock in db_dict['stock']:
+            db.session.add ( Stock ( stock[0] ) )
         db.session.commit ()
         # admins = [Admin ( 0, 'a' ), Admin ( 1, 'b' )]
         # for admin in admins:

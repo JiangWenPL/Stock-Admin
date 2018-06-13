@@ -11,4 +11,5 @@ app.config.from_object ( 'config' )
 db = SQLAlchemy ( app )
 lm = LoginManager ()
 lm.init_app ( app )
+CENTER_API_URL = 'http://0.0.0.0:8080/api'
 from app import models, views

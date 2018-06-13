@@ -3,9 +3,9 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<h3>{{username}} 您好</h3>
-<h4>请输入股票代码进行查询</h4>
 <div class="container">
+    <h3>{{username}} 您好</h3>
+    <h4>请输入股票代码进行查询</h4>
     <div class="col-sm-12 column">
         <div class="row clearfix">
             <div class="col-sm-4 column">
@@ -22,13 +22,13 @@
             </div>
             <!--<div class="col-sm-4 column">-->
             <div class="col-sm-4 text-center my-auto ">
-                <div class="h4 mb-0 text-primary">¥34.69</div>
+                <div class="h4 mb-0 text-primary">¥ {{price}}</div>
                 <div class="small text-muted">最新成交价格</div>
             </div>
             <!--</div>-->
             <!--<div class="col-sm-4 column">-->
             <div class="col-sm-4 text-center my-auto ">
-                <div class="h4 mb-1 text-warning">18,474</div>
+                <div class="h4 mb-1 text-warning">{{num}}</div>
                 <div class="small text-muted">成交股数</div>
             </div>
             <!--</div>-->
@@ -38,10 +38,10 @@
         <div class="col-md-12 column">
             <ul class="nav nav-tabs">
                 <li class="nav-item">
-                    <a class="nav-link active show" data-toggle="tab" href="#single">买入指令</a>
+                    <a class="nav-link active show" data-toggle="tab" href="#single">卖出指令</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" data-toggle="tab" href="#group">卖出指令</a>
+                    <a class="nav-link" data-toggle="tab" href="#group">买入指令</a>
                 </li>
             </ul>
             <div id="myTabContent" class="tab-content">
@@ -65,12 +65,11 @@
                                     </tr>
                                     </tfoot>
                                     <tbody>
-                                    {% for row in buy %}
-                                    <tr class={{ loop.cycle(
-                                    "", "table-active")}}>
-                                    <td>{{ row.stock_price }}</td>
-                                    <td>{{ row.stock_num }}</td>
-                                    <td>{{ row.time }}</td>
+                                    {% for row in sell %}
+                                    <tr class="">
+                                        <td>{{ row.stock_price }}</td>
+                                        <td>{{ row.stock_num }}</td>
+                                        <td>{{ row.time }}</td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>
@@ -101,12 +100,11 @@
                                     </tr>
                                     </tfoot>
                                     <tbody>
-                                    {% for row in sell %}
-                                    <tr class={{ loop.cycle(
-                                    "", "table-active")}}>
-                                    <td>{{ row.stock_price }}</td>
-                                    <td>{{ row.stock_num }}</td>
-                                    <td>{{ row.time }}</td>
+                                    {% for row in buy %}
+                                    <tr class="">
+                                        <td>{{ row.stock_price }}</td>
+                                        <td>{{ row.stock_num }}</td>
+                                        <td>{{ row.time }}</td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>

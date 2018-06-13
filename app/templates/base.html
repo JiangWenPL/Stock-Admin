@@ -42,34 +42,37 @@
                 </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
-                <a class="nav-link" href="confine.html">
+                <a class="nav-link" href="confine">
                     <i class="fa fa-fw fa-table"></i>
                     <span class="nav-link-text">涨跌停限制</span>
+                </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Config">
+                <a class="nav-link" href="/trading">
+                    <i class="fa fa-fw fa-step-forward"></i>
+                    <span class="nav-link-text">暂停和重启交易</span>
                 </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Menu Levels">
                 <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseMulti"
                    data-parent="#exampleAccordion">
-                    <i class="fa fa-fw fa-step-forward"></i>
-                    <span class="nav-link-text">暂停和重启交易</span>
+                    <i class="fa fa-fw fa-wrench"></i>
+                    <span class="nav-link-text">个人设置</span>
                 </a>
                 <ul class="sidenav-second-level collapse" id="collapseMulti">
                     <li>
-                        <a href="start.html">开启交易</a>
+                        <a href="/change_password">修改密码</a>
                     </li>
                     <li>
-                        <a href="stop.html">停止交易</a>
+                        <a href="/auth">权限设置</a>
+                    </li>
+                     <li>
+                        <a href="/account">账户设置</a>
                     </li>
                 </ul>
             </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Config">
-                <a class="nav-link" href="change_password">
-                    <i class="fa fa-fw fa-wrench"></i>
-                    <span class="nav-link-text">修改密码</span>
-                </a>
-            </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
-                <a class="nav-link" href="tutorial.html">
+                <a class="nav-link" href="/tutorial">
                     <i class="fa fa-fw fa-book"></i>
                     <span class="nav-link-text">帮助文档</span>
                 </a>
@@ -270,6 +273,8 @@
     <!-- Custom scripts for this page-->
     <script src="../static/js/sb-admin-datatables.min.js"></script>
     <script src="../static/js/sb-admin-charts.min.js"></script>
+    {% block script %}
+    {% endblock %}
 </div>
 </body>
 
