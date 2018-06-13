@@ -1,0 +1,94 @@
+{% set current_page = "账户管理" %}
+
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="row clearfix">
+    <div class="container">
+        <h3>{{username}} 您好</h3>
+        <div class="col-md-12 column">
+            <form method="POST" action="{{url_for('account')}}" class="form-horizontal">
+                <fieldset>
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        <div class="row clearfix">
+                            <div class="col-md-3 column">
+                                <label>管理员账户</label>
+                                <input type="text" class="form-control required"
+                                       name="admin_id" placeholder="账户名">
+                            </div>
+                            <div class="col-md-3 column">
+                                <label>密码</label>
+                                <input class="form-control" id="password" name="password" type="password"
+                                       placeholder="密码">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row clearfix">
+                            <div class="col-md-3 column">
+                                <label>行为</label>
+                                <div class="custom-select-md">
+                                    <select name="action" class="form-control form-control-md">
+                                        <option value="add" selected>添加</option>
+                                        <option value="delete">删除</option>
+                                        <option value="update">修改</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3 column">
+                                <label>超级用户权限</label>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" name="is_root" type="checkbox"> 超级用户</label>
+                                </div>
+                            </div>
+                            <div class="col-md-offset-10 column">
+                                <label>&nbsp;</label>
+                                <br>
+                                <button type="submit" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-smile-o"></i> 管理员列表
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>管理员</th>
+                            <th>是否为超级用户</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>管理员</th>
+                            <th>是否为超级用户</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        {% for row in auth_list %}
+                        <tr class={{ loop.cycle(
+                        "", "table-active")}}>
+                        <td>{{ row.id }}</td>
+                        {% if row.is_root %}
+                        <td>是</td>
+                        {% else %}
+                        <td>否</td>
+                        {% endif %}
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        </div>
+    </div>
+</div>
+{% endblock%}

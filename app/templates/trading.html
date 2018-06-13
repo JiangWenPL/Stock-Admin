@@ -1,0 +1,96 @@
+{% set current_page = "交易状态变更" %}
+
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="row clearfix">
+    <div class="container">
+        <h3>{{username}} 您好</h3>
+        <h4>请在列表中执行操作</h4>
+    </div>
+</div>
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-smile-o"></i> 股票权限列表
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                <tr>
+                    <th>股票代码</th>
+                    <th>准许交易</th>
+                    <th>开启交易</th>
+                    <th>停止交易</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>股票代码</th>
+                    <th>准许交易</th>
+                    <th>开启交易</th>
+                    <th>停止交易</th>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% for row in stock_list %}
+                <!--<tr class={{ loop.cycle("", "table-active")}}>-->
+                <tr>
+                    <td>{{ row.stock_name }}</td>
+                    {% if row.is_trading %}
+                    <td>是</td>
+                    {% else %}
+                    <td>否</td>
+                    {% endif %}
+                    <td>
+                        <button type="button" class="btn btn-success"
+                                onclick="changeTrading('/trading?action=start&stock_id={{ row.stock_name }}')">开启交易
+                        </button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger"
+                                onclick="changeTrading('/trading?action=stop&stock_id={{ row.stock_name }}')">停止交易
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+</div>
+<div class="modal fade" id="changeTrading" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">您确定要改变该股票交易状态?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">选择取消如果您无意改变交易状态
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">取消</button>
+                <a class="btn btn-primary" onclick="urlSubmit()" data-dismiss="modal">确定</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock%}
+
+{% block script %}
+<script>function changeTrading(url) {
+    localStorage.setItem("urlct", url);
+    $('#changeTrading').modal();
+}
+function urlSubmit() {
+    var url = localStorage.getItem("urlct");
+    window.location.href = url;
+//    window.location.reload()
+//    $.post('/trading', url)
+}</script>
+{% endblock%}

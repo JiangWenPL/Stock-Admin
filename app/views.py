@@ -122,15 +122,18 @@ def confine():
                 try:
                     flash ( '请求已发送', 'success' )
                     api_data = request.values.to_dict ()
+                    api_data['action'] = 'confine_change'
+                    print ( json.dumps ( api_data ) )
                     r = requests.post ( CENTER_API_URL, json=json.dumps ( api_data ) )
                     flash ( r.json (), 'info' )
-                    ans = json.loads ( r.json () )
+                    ans = r.json ()
                     if ans.get ( 'result', None ):
-                        flash ( '变更成功' )
+                        flash ( '变更成功', 'success' )
                     else:
-                        flash ( '变更失败' )
+                        flash ( '变更失败', 'danger' )
                     flash ( r.json (), 'info' )
                 except Exception as e:
+                    raise e
                     flash ( e, 'danger' )
                     flash ( '中央交易系统端异常', 'danger' )
             else:
@@ -165,7 +168,8 @@ def trading():
                         try:
                             api_data = request.values.to_dict ()
                             r = requests.post ( CENTER_API_URL, json=json.dumps ( api_data ) )
-                            ans = json.loads ( r.json () )
+                            print ( json.dumps ( api_data ) )
+                            ans = r.json ()
                             if ans.get ( 'result', None ):
                                 flash ( '开启交易成功' )
                             else:
@@ -183,15 +187,17 @@ def trading():
                         try:
                             api_data = request.values.to_dict ()
                             r = requests.post ( CENTER_API_URL, json=json.dumps ( api_data ) )
+                            print(json.dumps ( api_data ))
                             flash ( r.json (), 'info' )
-                            ans = json.loads ( r.json () )
+                            ans = r.json ()
                             if ans.get ( 'result', None ):
-                                flash ( '停止交易成功' )
+                                flash ( '停止交易成功', 'success' )
                             else:
-                                flash ( '停止交易失败' )
+                                flash ( '停止交易失败', 'danger' )
                             flash ( r.json (), 'info' )
                         except Exception as e:
                             flash ( e, 'danger' )
+                            raise e
                             flash ( '中央交易系统端异常', 'danger' )
                     else:
                         flash ( '交易本身就已关闭', 'success' )
@@ -605,4 +611,5 @@ def account():
 
 @app.route ( '/api', methods=['GET', 'POST'] )
 def api():
-    return str ( request.json )
+    api_return = {'result': True}
+    return json.dumps ( api_return )
