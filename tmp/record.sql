@@ -1,3 +1,6 @@
+CREATE DATABASE record;
+USE record;
+
 CREATE TABLE buy (
   buy_no      INT(11) NOT NULL AUTO_INCREMENT,
   stock_name  VARCHAR(40),
