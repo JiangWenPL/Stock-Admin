@@ -90,14 +90,16 @@ class Stock ( db.Model ):
 
 
 class Buy ( db.Model ):
-    __bind_key__ = 'record'
+    __bind_key__ = 'stock'
     __tablename__ = 'buy'
-
     buy_no = db.Column ( db.INTEGER, primary_key=True )
     stock_name = db.Column ( db.String ( 40 ) )
     stock_price = db.Column ( db.DECIMAL ( 7, 2 ) )
     stock_num = db.Column ( db.INTEGER )
-    time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" ) )
+    time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP" ) )
+    state = db.Column ( db.Enum ( '1', '2', '3' ) )
+    price = db.Column ( db.DECIMAL ( 7, 2 ) )
+    complete_num = db.Column ( db.INTEGER )
 
     def __init__(self, stock_name, stock_price, stock_num):
         self.stock_name = stock_name
@@ -107,14 +109,16 @@ class Buy ( db.Model ):
 
 
 class Sell ( db.Model ):
-    __bind_key__ = 'record'
+    __bind_key__ = 'stock'
     __tablename__ = 'sell'
-
     sell_no = db.Column ( db.INTEGER, primary_key=True )
     stock_name = db.Column ( db.String ( 40 ) )
     stock_price = db.Column ( db.DECIMAL ( 7, 2 ) )
     stock_num = db.Column ( db.INTEGER )
-    time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" ) )
+    time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP" ) )
+    state = db.Column ( db.Enum ( '1', '2', '3' ) )
+    price = db.Column ( db.DECIMAL ( 7, 2 ) )
+    complete_num = db.Column ( db.INTEGER )
 
     def __init__(self, stock_name, stock_price, stock_num):
         self.stock_name = stock_name
@@ -124,14 +128,18 @@ class Sell ( db.Model ):
 
 
 class Tran ( db.Model ):
-    __bind_key__ = 'record'
+    __bind_key__ = 'stock'
     __tablename__ = 'tran'
-
     trans_no = db.Column ( db.INTEGER, primary_key=True )
-    stock_name = db.Column ( db.CHAR ( 11 ) )
+    stock_name = db.Column ( db.String ( 40 ) )
     trans_price = db.Column ( db.DECIMAL ( 7, 2 ) )
     trans_stock_num = db.Column ( db.INTEGER )
-    time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" ) )
+    time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP" ) )
+    sell_no = db.Column ( db.ForeignKey ( 'sell.sell_no' ), index=True )
+    buy_no = db.Column ( db.ForeignKey ( 'buy.buy_no' ), index=True )
+
+    buy = db.relationship ( 'Buy' )
+    sell = db.relationship ( 'Sell' )
 
     def __init__(self, stock_name, trans_price, trans_stock_num):
         self.stock_name = stock_name
