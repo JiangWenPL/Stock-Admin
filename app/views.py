@@ -124,7 +124,7 @@ def confine():
                     api_data = request.values.to_dict ()
                     api_data['action'] = 'confine_change'
                     print ( json.dumps ( api_data ) )
-                    r = requests.post ( CENTER_API_URL, json=json.dumps ( api_data ) )
+                    r = requests.post ( CENTER_API_URL, json=api_data )
                     flash ( r.json (), 'info' )
                     ans = r.json ()
                     if ans.get ( 'result', None ):
@@ -167,7 +167,7 @@ def trading():
                         flash ( '开启请求已发送', 'success' )
                         try:
                             api_data = request.values.to_dict ()
-                            r = requests.post ( CENTER_API_URL, json=json.dumps ( api_data ) )
+                            r = requests.post ( CENTER_API_URL, json=api_data )
                             print ( json.dumps ( api_data ) )
                             ans = r.json ()
                             if ans.get ( 'result', None ):
@@ -187,7 +187,7 @@ def trading():
                         flash ( '停止请求已发送', 'success' )
                         try:
                             api_data = request.values.to_dict ()
-                            r = requests.post ( CENTER_API_URL, json=json.dumps ( api_data ) )
+                            r = requests.post ( CENTER_API_URL, json=api_data )
                             print ( json.dumps ( api_data ) )
                             flash ( r.json (), 'info' )
                             ans = r.json ()
