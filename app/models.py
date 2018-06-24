@@ -74,7 +74,7 @@ class Auth ( db.Model ):
 
 class Stock ( db.Model ):
     __tablename__ = "stock"
-    stock_id = db.Column ( db.Integer, primary_key=True, autoincrement=True )
+    stock_inner_id = db.Column ( db.Integer, primary_key=True, autoincrement=True )
     stock_name = db.Column ( db.String ( 40 ), index=True )
     is_trading = db.Column ( db.Boolean, default=True )
     up_confine = db.Column ( db.DECIMAL ( 7, 2 ), default=10 )
@@ -86,7 +86,7 @@ class Stock ( db.Model ):
     # For debug
     def __repr__(self):
         return '<stock: %r: %r %r %r %r>' % (
-            self.stock_id, self.stock_name, self.is_trading, self.down_confine, self.up_confine)
+            self.stock_inner_id, self.stock_name, self.is_trading, self.down_confine, self.up_confine)
 
 
 class Buy ( db.Model ):
