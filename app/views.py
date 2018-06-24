@@ -177,6 +177,7 @@ def trading():
                             flash ( r.json (), 'info' )
                         except Exception as e:
                             flash ( e, 'danger' )
+                            raise e
                             flash ( '中央交易系统端异常', 'danger' )
 
                 elif action == 'stop':
@@ -187,7 +188,7 @@ def trading():
                         try:
                             api_data = request.values.to_dict ()
                             r = requests.post ( CENTER_API_URL, json=json.dumps ( api_data ) )
-                            print(json.dumps ( api_data ))
+                            print ( json.dumps ( api_data ) )
                             flash ( r.json (), 'info' )
                             ans = r.json ()
                             if ans.get ( 'result', None ):
