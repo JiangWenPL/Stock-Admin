@@ -93,13 +93,17 @@ class Buy ( db.Model ):
     __bind_key__ = 'stock'
     __tablename__ = 'buy'
     buy_no = db.Column ( db.INTEGER, primary_key=True )
-    stock_name = db.Column ( db.String ( 40 ) )
+    stock_id = db.Column ( db.CHAR ( 10 ) )
+    stock_name = db.Column ( db.ForeignKey ( 'message.stock_name' ), index=True )
     stock_price = db.Column ( db.DECIMAL ( 7, 2 ) )
     stock_num = db.Column ( db.INTEGER )
     time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP" ) )
     state = db.Column ( db.Enum ( '1', '2', '3' ) )
     price = db.Column ( db.DECIMAL ( 7, 2 ) )
     complete_num = db.Column ( db.INTEGER )
+    user_id = db.Column ( db.INTEGER )
+
+    message = db.relationship ( 'Message' )
 
     def __init__(self, stock_name, stock_price, stock_num):
         self.stock_name = stock_name
@@ -112,13 +116,17 @@ class Sell ( db.Model ):
     __bind_key__ = 'stock'
     __tablename__ = 'sell'
     sell_no = db.Column ( db.INTEGER, primary_key=True )
-    stock_name = db.Column ( db.String ( 40 ) )
+    stock_id = db.Column ( db.CHAR ( 10 ) )
+    stock_name = db.Column ( db.ForeignKey ( 'message.stock_name' ), index=True )
     stock_price = db.Column ( db.DECIMAL ( 7, 2 ) )
     stock_num = db.Column ( db.INTEGER )
     time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP" ) )
     state = db.Column ( db.Enum ( '1', '2', '3' ) )
     price = db.Column ( db.DECIMAL ( 7, 2 ) )
     complete_num = db.Column ( db.INTEGER )
+    user_id = db.Column ( db.INTEGER )
+
+    message = db.relationship ( 'Message' )
 
     def __init__(self, stock_name, stock_price, stock_num):
         self.stock_name = stock_name
@@ -131,7 +139,8 @@ class Tran ( db.Model ):
     __bind_key__ = 'stock'
     __tablename__ = 'tran'
     trans_no = db.Column ( db.INTEGER, primary_key=True )
-    stock_name = db.Column ( db.String ( 40 ) )
+    stock_id = db.Column ( db.CHAR ( 10 ) )
+    stock_name = db.Column ( db.ForeignKey ( 'message.stock_name' ), index=True )
     trans_price = db.Column ( db.DECIMAL ( 7, 2 ) )
     trans_stock_num = db.Column ( db.INTEGER )
     time = db.Column ( db.TIMESTAMP, server_default=db.text ( "CURRENT_TIMESTAMP" ) )
@@ -140,6 +149,7 @@ class Tran ( db.Model ):
 
     buy = db.relationship ( 'Buy' )
     sell = db.relationship ( 'Sell' )
+    message = db.relationship ( 'Message' )
 
     def __init__(self, stock_name, trans_price, trans_stock_num):
         self.stock_name = stock_name
@@ -153,6 +163,10 @@ def test_init():
         for admin in db_dict['admin']:
             if Admin.query.get ( admin[0] ) is None:
                 db.session.add ( Admin ( admin[0], admin[1] ) )
+        for stock in db_dict['stock']:
+            db.session.add ( Stock ( stock[0] ) )
+            if Message.query.filter_by ( stock_name=stock[0] ).first () is None:
+                db.session.add ( Message ( stock[0] ) )
         for auth in db_dict['auth']:
             db.session.add ( Auth ( auth[0], auth[1] ) )
         for sell in db_dict['sell']:
@@ -161,9 +175,10 @@ def test_init():
             db.session.add ( Buy ( buy[0], buy[1], buy[2] ) )
         for tran in db_dict['tran']:
             db.session.add ( Tran ( tran[0], tran[1], tran[1] ) )
-        for stock in db_dict['stock']:
-            db.session.add ( Stock ( stock[0] ) )
+
         db.session.commit ()
+
+        # Depracted code
         # admins = [Admin ( 0, 'a' ), Admin ( 1, 'b' )]
         # for admin in admins:
         #     if Admin.query.get ( admin.id ) is None:
@@ -181,3 +196,16 @@ def test_init():
         # trans = [Tran ( "APPLE", 0.11, 1 ), Tran ( "BMW", 1.63, 120 )]
         # db.session.add_all ( trans )
         # db.session.commit ()
+
+
+class Message ( db.Model ):
+    __tablename__ = 'message'
+    __bind_key__ = 'stock'
+    stock_name = db.Column ( db.String ( 40 ), primary_key=True )
+    stock_id = db.Column ( db.CHAR ( 30 ) )
+    stock_price = db.Column ( db.DECIMAL ( 7, 2 ) )
+
+    # continue_trans = db.Column ( db.TINYINT(1), server_default=db.text ( "'1'" ) )
+    def __init__(self, stock_name, stock_id=None, stock_price=1):
+        self.stock_name = stock_name
+        self.stock_price = stock_price

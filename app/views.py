@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 __author__ = u'Jiang Wen'
 from flask import render_template, flash, request, abort, redirect, url_for, g, jsonify
-from app import app, db, lm, CENTER_API_URL  # , csv_set
+from app import app, db, lm, CENTER_API_URL, DEBUGGING  # , csv_set
 from flask_login import login_user, login_required, logout_user, current_user
 from app.forms import LoginForm, ChangePWDForm, ConfineForm, ChangeAuth, ChangeAccount
 from flask_bootstrap import Bootstrap
@@ -118,27 +118,31 @@ def confine():
             if stock:
                 stock.down_confine = form.down_confine.data
                 stock.up_confine = form.up_confine.data
-                db.session.commit ()
                 try:
                     flash ( '请求已发送', 'success' )
                     api_data = request.values.to_dict ()
                     api_data['action'] = 'confine_change'
                     print ( json.dumps ( api_data ) )
                     r = requests.post ( CENTER_API_URL, json=api_data )
-                    flash ( r.json (), 'info' )
                     ans = r.json ()
                     if ans.get ( 'result', None ):
                         flash ( '变更成功', 'success' )
+                        db.session.commit ()
                     else:
                         flash ( '变更失败', 'danger' )
-                    flash ( r.json (), 'info' )
+                        db.session.rollback ()
+                    if DEBUGGING:
+                        flash ( r.json (), 'info' )
                 except Exception as e:
-                    raise e
-                    flash ( e, 'danger' )
+                    if DEBUGGING:
+                        flash ( e, 'danger' )
+                        raise e
+                    db.session.rollback ()
                     flash ( '中央交易系统端异常', 'danger' )
             else:
                 flash ( '未找到该股票', 'warning' )
-            flash ( form.data, 'info' )
+            if DEBUGGING:
+                flash ( form.data, 'info' )
             pass
         else:
             flash ( "您没有该权限", 'danger' )
@@ -163,7 +167,6 @@ def trading():
                         flash ( '交易本身就已开启', 'warning' )
                     else:
                         stock.is_trading = True
-                        db.session.commit ()
                         flash ( '开启请求已发送', 'success' )
                         try:
                             api_data = request.values.to_dict ()
@@ -172,33 +175,41 @@ def trading():
                             ans = r.json ()
                             if ans.get ( 'result', None ):
                                 flash ( '开启交易成功' )
+                                db.session.commit ()
                             else:
+                                db.session.rollback ()
                                 flash ( '开启交易失败' )
-                            flash ( r.json (), 'info' )
+                            if DEBUGGING:
+                                flash ( r.json (), 'info' )
                         except Exception as e:
-                            flash ( e, 'danger' )
-                            raise e
+                            if DEBUGGING:
+                                flash ( e, 'danger' )
+                                raise e
+                            db.session.rollback ()
                             flash ( '中央交易系统端异常', 'danger' )
 
                 elif action == 'stop':
                     if stock.is_trading:
                         stock.is_trading = False
-                        db.session.commit ()
                         flash ( '停止请求已发送', 'success' )
                         try:
                             api_data = request.values.to_dict ()
                             r = requests.post ( CENTER_API_URL, json=api_data )
                             print ( json.dumps ( api_data ) )
-                            flash ( r.json (), 'info' )
                             ans = r.json ()
                             if ans.get ( 'result', None ):
+                                db.session.commit ()
                                 flash ( '停止交易成功', 'success' )
                             else:
+                                db.session.rollback ()
                                 flash ( '停止交易失败', 'danger' )
-                            flash ( r.json (), 'info' )
+                            if DEBUGGING:
+                                flash ( r.json (), 'info' )
                         except Exception as e:
-                            flash ( e, 'danger' )
-                            raise e
+                            if DEBUGGING:
+                                flash ( e, 'danger' )
+                                raise e
+                            db.session.rollback ()
                             flash ( '中央交易系统端异常', 'danger' )
                     else:
                         flash ( '交易本身就已关闭', 'success' )
@@ -612,5 +623,6 @@ def account():
 
 @app.route ( '/api', methods=['GET', 'POST'] )
 def api():
-    api_return = {'result': True}
-    return json.dumps ( api_return )
+    api_return = {'result': False}
+    # return json.dumps ( api_return )
+    return '{"result": true}'
