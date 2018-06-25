@@ -167,8 +167,8 @@ def test_init():
                 db.session.add ( Admin ( admin[0], admin[1] ) )
         for stock in db_dict['stock']:
             db.session.add ( Stock ( stock[0] ) )
-            if Message.query.filter_by ( stock_name=stock[0] ).first () is None:
-                pass
+            # if Message.query.filter_by ( stock_name=stock[0] ).first () is None:
+            #     pass
                 # db.session.add ( Message ( stock[0] ) )
         for auth in db_dict['auth']:
             db.session.add ( Auth ( auth[0], auth[1] ) )
