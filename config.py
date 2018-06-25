@@ -22,11 +22,11 @@ JOBS = [
         'trigger': {
             'type': 'cron',
             'day_of_week': "mon-fri",
-            # 'hour': '8',
-            # 'minute': '0',
-            'hour': '0-23',
-            'minute': '0-59',
-            'second': '*/10'
+            'hour': '8',
+            'minute': '0',
+            # 'hour': '0-23',
+            # 'minute': '0-59',
+            # 'second': '*/10'
         },
     }
 ]
