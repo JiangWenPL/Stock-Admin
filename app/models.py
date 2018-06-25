@@ -216,8 +216,8 @@ class Message ( db.Model ):
 
 
 def send_confine_to_center():
-    stocks = Stock.query.filter_by ( dirty=True ).all ()
-    print('Every day init confine')
+    stocks = Stock.query.filter_by ( is_trading=False ).all ()
+    print ( 'Every day init confine' )
     for stock in stocks:
         try:
             # scheduler.delete_job ( 'send_confine_to_center' )
