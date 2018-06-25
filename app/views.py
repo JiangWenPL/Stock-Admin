@@ -166,7 +166,7 @@ def trading():
                             print ( json.dumps ( api_data ) )
                             ans = r.json ()
                             if ans.get ( 'result', None ):
-                                flash ( '开启交易成功' 'success' )
+                                flash ( '开启交易成功', 'success' )
                                 db.session.commit ()
                             else:
                                 db.session.rollback ()

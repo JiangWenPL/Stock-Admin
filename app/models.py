@@ -204,7 +204,7 @@ class Message ( db.Model ):
     __tablename__ = 'message'
     __bind_key__ = 'stock'
     stock_name = db.Column ( db.String ( 40 ), primary_key=True )
-    stock_id = db.Column ( db.CHAR ( 30 ) )
+    stock_id = db.Column ( db.CHAR ( 10 ) )
     stock_price = db.Column ( db.DECIMAL ( 7, 2 ) )
     up_confine = db.Column ( db.DECIMAL ( 4, 2 ), server_default=db.text ( "'0.10'" ) )
     down_confine = db.Column ( db.DECIMAL ( 4, 2 ), server_default=db.text ( "'0.10'" ) )
@@ -248,8 +248,8 @@ def send_confine_to_center():
             # scheduler.delete_job ( 'send_confine_to_center' )
             # import pdb;
             # pdb.set_trace ()
-            print ( api_data )
             api_data = {'action': 'stop', 'stock_id': stock.stock_name}
+            print ( api_data )
             r = requests.post ( CENTER_API_URL, json=api_data )
             ans = r.json ()
             if ans.get ( 'result', None ):
