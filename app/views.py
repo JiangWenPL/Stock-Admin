@@ -44,9 +44,9 @@ def index():
 
 @app.route ( '/change_password', methods=['GET', 'POST'] )
 def change_password():
-    if request.method == 'POST':
-        import pdb;
-        pdb.set_trace ()
+    # if request.method == 'POST':
+    #     import pdb;
+    #     pdb.set_trace ()
     username = str ( current_user.get_id () )
     flash ( username, 'info' )
     logout_user ()
@@ -118,6 +118,10 @@ def confine():
             if stock:
                 stock.down_confine = form.down_confine.data
                 stock.up_confine = form.up_confine.data
+                if stock.down_confine < 0 or stock.up_confine < 0 or stock.down_confine > 100:
+                    flash ( '限制不合规', 'warning' )
+                    return render_template ( "confine.html", username=current_user.get_id (), stock_list=stock_list,
+                                             form=form )
                 try:
                     flash ( '请求已发送', 'success' )
                     api_data = request.values.to_dict ()
