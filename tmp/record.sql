@@ -6,7 +6,9 @@ CREATE TABLE message
   stock_name     VARCHAR(40),
   stock_id       CHAR(30),
   stock_price    DECIMAL(7, 2),
-  continue_trans BOOL DEFAULT 1,
+  continue_trans BOOL          DEFAULT 1,
+  up_confine     DECIMAL(4, 2) DEFAULT 0.1,
+  down_confine   DECIMAL(4, 2) DEFAULT 0.1,
   PRIMARY KEY (stock_name)
 );
 CREATE TABLE buy

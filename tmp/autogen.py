@@ -15,6 +15,8 @@ class Message(Base):
     stock_id = Column(CHAR(30))
     stock_price = Column(DECIMAL(7, 2))
     continue_trans = Column(TINYINT(1), server_default=text("'1'"))
+    up_confine = Column(DECIMAL(4, 2), server_default=text("'0.10'"))
+    down_confine = Column(DECIMAL(4, 2), server_default=text("'0.10'"))
 
 
 class Buy(Base):

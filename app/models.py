@@ -204,6 +204,8 @@ class Message ( db.Model ):
     stock_name = db.Column ( db.String ( 40 ), primary_key=True )
     stock_id = db.Column ( db.CHAR ( 30 ) )
     stock_price = db.Column ( db.DECIMAL ( 7, 2 ) )
+    up_confine = db.Column ( db.DECIMAL ( 4, 2 ), server_default=db.text ( "'0.10'" ) )
+    down_confine = db.Column ( db.DECIMAL ( 4, 2 ), server_default=db.text ( "'0.10'" ) )
 
     # continue_trans = db.Column ( db.TINYINT(1), server_default=db.text ( "'1'" ) )
     def __init__(self, stock_name, stock_id=None, stock_price=1):
