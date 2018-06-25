@@ -1,15 +1,4 @@
 USE stcok;
-CREATE TABLE message
-(
-  stock_name     VARCHAR(40),
-  stock_id       CHAR(10),
-  stock_price    DECIMAL(7, 2),
-  continue_trans BOOL          DEFAULT 1,
-  up_confine     DECIMAL(4, 2) DEFAULT 0.1,
-  down_confine   DECIMAL(4, 2) DEFAULT 0.1,
-  PRIMARY KEY (stock_name)
-);
-
 INSERT INTO message VALUE ("基金裕阳", "0000500006", 100);
 INSERT INTO message VALUE ("基金兴华", "0000500008", 100);
 INSERT INTO message VALUE ("基金安顺", "0000500009", 100);
