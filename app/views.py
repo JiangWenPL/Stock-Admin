@@ -186,6 +186,7 @@ def trading():
                         flash ( '停止请求已发送', 'success' )
                         try:
                             api_data = request.values.to_dict ()
+                            # print(api_data)
                             r = requests.post ( CENTER_API_URL, json=api_data )
                             print ( json.dumps ( api_data ) )
                             ans = r.json ()

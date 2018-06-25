@@ -216,7 +216,7 @@ class Message ( db.Model ):
 
 
 def send_confine_to_center():
-    stocks = Stock.query.filter_by ( is_trading=False ).all ()
+    stocks = Stock.query.filter_by ( dirty=True ).all ()
     print ( 'Every day init confine' )
     for stock in stocks:
         try:
@@ -227,6 +227,29 @@ def send_confine_to_center():
             api_data = {'action': 'confine_change', 'stock_name': stock.stock_name,
                         'up_confine': float ( stock.up_confine ) / 100,
                         'down_confine': float ( stock.down_confine ) / 100}
+            r = requests.post ( CENTER_API_URL, json=api_data )
+            ans = r.json ()
+            if ans.get ( 'result', None ):
+                print ( '变更成功', 'success' )
+                stock.dirty = False
+                db.session.commit ()
+            else:
+                print ( '变更失败', 'danger' )
+            print ( r.json )
+        except Exception as e:
+            print ( e )
+            raise e
+            db.session.rollback ()
+            print ( '中央交易系统端异常' )
+    stocks = Stock.query.filter_by ( is_trading=False ).all ()
+    print ( 'Every day init banned' )
+    for stock in stocks:
+        try:
+            # scheduler.delete_job ( 'send_confine_to_center' )
+            # import pdb;
+            # pdb.set_trace ()
+            print ( api_data )
+            api_data = {'action': 'stop', 'stock_id': stock.stock_name}
             r = requests.post ( CENTER_API_URL, json=api_data )
             ans = r.json ()
             if ans.get ( 'result', None ):
