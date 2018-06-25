@@ -160,7 +160,7 @@ class Tran ( db.Model ):
 
 
 def test_init():
-    with open ( 'tmp/db_init.json' ) as f:
+    with open ( 'tmp/db_init.json', encoding='utf-8' ) as f:
         db_dict = json.load ( f )
         for admin in db_dict['admin']:
             if Admin.query.get ( admin[0] ) is None:
@@ -225,17 +225,19 @@ def send_confine_to_center():
             # pdb.set_trace ()
             print ( 'sending confine to center' )
             api_data = {'action': 'confine_change', 'stock_name': stock.stock_name,
-                        'up_confine': float ( stock.up_confine ) / 100,
-                        'down_confine': float ( stock.down_confine ) / 100}
-            r = requests.post ( CENTER_API_URL, json=api_data )
+                        'up_confine': float ( stock.up_confine ),
+                        'down_confine': float ( stock.down_confine )}
+            r = requests.post ( CENTER_API_URL, json=api_data, timeout=1 )
             ans = r.json ()
+            print ( api_data )
             if ans.get ( 'result', None ):
                 print ( '变更成功', 'success' )
                 stock.dirty = False
                 db.session.commit ()
             else:
                 print ( '变更失败', 'danger' )
-            print ( r.json )
+
+            print ( r.json () )
         except Exception as e:
             print ( e )
             raise e
@@ -250,15 +252,16 @@ def send_confine_to_center():
             # pdb.set_trace ()
             api_data = {'action': 'stop', 'stock_id': stock.stock_name}
             print ( api_data )
-            r = requests.post ( CENTER_API_URL, json=api_data )
+            r = requests.post ( CENTER_API_URL, json=api_data, timeout=1 )
             ans = r.json ()
+            print ( api_data )
             if ans.get ( 'result', None ):
                 print ( '变更成功', 'success' )
                 stock.dirty = False
                 db.session.commit ()
             else:
                 print ( '变更失败', 'danger' )
-            print ( r.json )
+            print ( r.json () )
         except Exception as e:
             print ( e )
             raise e

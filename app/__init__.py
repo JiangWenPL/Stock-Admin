@@ -14,8 +14,8 @@ db = SQLAlchemy ( app )
 lm = LoginManager ()
 lm.init_app ( app )
 DEBUGGING = True
-CENTER_API_URL = 'http://127.0.0.1:8080/api'
-# CENTER_API_URL = 'http://localhost/mytest/get_info_from_TSM.php'
+# CENTER_API_URL = 'http://127.0.0.1:8080/api'
+CENTER_API_URL = 'http://localhost/mytest/get_info_from_TSM.php'
 # app.config.from_object ( Config () )
 scheduler = APScheduler ()  # it is also possible to enable the API directly
 # scheduler.api_enabled = True

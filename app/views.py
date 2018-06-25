@@ -162,7 +162,7 @@ def trading():
                         flash ( '开启请求已发送', 'success' )
                         try:
                             api_data = request.values.to_dict ()
-                            r = requests.post ( CENTER_API_URL, json=api_data )
+                            r = requests.post ( CENTER_API_URL, json=api_data, timeout=1 )
                             print ( json.dumps ( api_data ) )
                             ans = r.json ()
                             if ans.get ( 'result', None ):
@@ -187,7 +187,7 @@ def trading():
                         try:
                             api_data = request.values.to_dict ()
                             # print(api_data)
-                            r = requests.post ( CENTER_API_URL, json=api_data )
+                            r = requests.post ( CENTER_API_URL, json=api_data, timeout=1 )
                             print ( json.dumps ( api_data ) )
                             ans = r.json ()
                             if ans.get ( 'result', None ):
