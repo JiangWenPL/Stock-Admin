@@ -168,7 +168,8 @@ def test_init():
         for stock in db_dict['stock']:
             db.session.add ( Stock ( stock[0] ) )
             if Message.query.filter_by ( stock_name=stock[0] ).first () is None:
-                db.session.add ( Message ( stock[0] ) )
+                pass
+                # db.session.add ( Message ( stock[0] ) )
         for auth in db_dict['auth']:
             db.session.add ( Auth ( auth[0], auth[1] ) )
         for sell in db_dict['sell']:
@@ -243,14 +244,17 @@ def send_confine_to_center():
             raise e
             db.session.rollback ()
             print ( '中央交易系统端异常' )
-    stocks = Stock.query.filter_by ( is_trading=False ).all ()
+    stocks = Stock.query.all ()
     print ( 'Every day init banned' )
     for stock in stocks:
         try:
             # scheduler.delete_job ( 'send_confine_to_center' )
             # import pdb;
             # pdb.set_trace ()
-            api_data = {'action': 'stop', 'stock_id': stock.stock_name}
+            if stock.is_trading:
+                api_data = {'action': 'start', 'stock_id': stock.stock_name}
+            else:
+                api_data = {'action': 'stop', 'stock_id': stock.stock_name}
             print ( api_data )
             r = requests.post ( CENTER_API_URL, json=api_data, timeout=1 )
             ans = r.json ()
