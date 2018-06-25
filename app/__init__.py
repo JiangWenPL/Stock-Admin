@@ -11,7 +11,7 @@ app.config.from_object ( 'config' )
 db = SQLAlchemy ( app )
 lm = LoginManager ()
 lm.init_app ( app )
-DEBUGGING = False
+DEBUGGING = True
 # CENTER_API_URL = 'http://127.0.0.1:8080/api'
 CENTER_API_URL = 'http://localhost/mytest/get_info_from_TSM.php'
 
