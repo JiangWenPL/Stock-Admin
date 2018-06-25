@@ -172,12 +172,12 @@ def test_init():
                 # db.session.add ( Message ( stock[0] ) )
         for auth in db_dict['auth']:
             db.session.add ( Auth ( auth[0], auth[1] ) )
-        for sell in db_dict['sell']:
-            db.session.add ( Sell ( sell[0], sell[1], sell[2] ) )
-        for buy in db_dict['buy']:
-            db.session.add ( Buy ( buy[0], buy[1], buy[2] ) )
-        for tran in db_dict['tran']:
-            db.session.add ( Tran ( tran[0], tran[1], tran[1] ) )
+        # for sell in db_dict['sell']:
+        #     db.session.add ( Sell ( sell[0], sell[1], sell[2] ) )
+        # for buy in db_dict['buy']:
+        #     db.session.add ( Buy ( buy[0], buy[1], buy[2] ) )
+        # for tran in db_dict['tran']:
+        #     db.session.add ( Tran ( tran[0], tran[1], tran[1] ) )
 
         db.session.commit ()
 
