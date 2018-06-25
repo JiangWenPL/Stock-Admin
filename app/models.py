@@ -1,7 +1,8 @@
 # coding: utf-8
-from app import db
+from app import db, CENTER_API_URL, scheduler
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
+import requests
 import datetime
 # from sqlalchemy import CHAR, Column, DECIMAL, ForeignKey, INTEGER, String, TIMESTAMP, text
 # from sqlalchemy.orm import relationship
@@ -79,14 +80,15 @@ class Stock ( db.Model ):
     is_trading = db.Column ( db.Boolean, default=True )
     up_confine = db.Column ( db.DECIMAL ( 7, 2 ), default=10 )
     down_confine = db.Column ( db.DECIMAL ( 7, 2 ), default=10 )
+    dirty = db.Column ( db.Boolean, default=False )
 
     def __init__(self, stock_name):
         self.stock_name = stock_name
 
     # For debug
     def __repr__(self):
-        return '<stock: %r: %r %r %r %r>' % (
-            self.stock_inner_id, self.stock_name, self.is_trading, self.down_confine, self.up_confine)
+        return '<stock: %r: %r %r %r %r %r>' % (
+            self.stock_inner_id, self.stock_name, self.is_trading, self.down_confine, self.up_confine, self.dirty)
 
 
 class Buy ( db.Model ):
@@ -211,3 +213,31 @@ class Message ( db.Model ):
     def __init__(self, stock_name, stock_id=None, stock_price=1):
         self.stock_name = stock_name
         self.stock_price = stock_price
+
+
+def send_confine_to_center():
+    stocks = Stock.query.filter_by ( dirty=True ).all ()
+    print('Every day init confine')
+    for stock in stocks:
+        try:
+            # scheduler.delete_job ( 'send_confine_to_center' )
+            # import pdb;
+            # pdb.set_trace ()
+            print ( 'sending confine to center' )
+            api_data = {'action': 'confine_change', 'stock_name': stock.stock_name,
+                        'up_confine': float ( stock.up_confine ) / 100,
+                        'down_confine': float ( stock.down_confine ) / 100}
+            r = requests.post ( CENTER_API_URL, json=api_data )
+            ans = r.json ()
+            if ans.get ( 'result', None ):
+                print ( '变更成功', 'success' )
+                stock.dirty = False
+                db.session.commit ()
+            else:
+                print ( '变更失败', 'danger' )
+            print ( r.json )
+        except Exception as e:
+            print ( e )
+            raise e
+            db.session.rollback ()
+            print ( '中央交易系统端异常' )

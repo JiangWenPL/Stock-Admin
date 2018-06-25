@@ -118,6 +118,7 @@ def confine():
             if stock:
                 stock.down_confine = form.down_confine.data
                 stock.up_confine = form.up_confine.data
+                stock.dirty = True
                 if stock.down_confine < 0 or stock.up_confine < 0 or stock.down_confine > 100:
                     flash ( '限制不合规', 'warning' )
                     db.session.rollback ()
@@ -126,30 +127,8 @@ def confine():
                         stock_list.append ( Stock.query.filter_by ( stock_name=auth.stock_id ).first () )
                     return render_template ( "confine.html", username=current_user.get_id (), stock_list=stock_list,
                                              form=form )
-                try:
-                    flash ( '请求已发送', 'success' )
-                    api_data = request.values.to_dict ()
-                    api_data['action'] = 'confine_change'
-                    # print ( json.dumps ( api_data ) )
-                    api_data['up_confine'] = float ( api_data['up_confine'] ) / 100
-                    api_data['down_confine'] = float ( api_data['down_confine'] ) / 100
-                    print ( api_data )
-                    r = requests.post ( CENTER_API_URL, json=api_data )
-                    ans = r.json ()
-                    if ans.get ( 'result', None ):
-                        flash ( '变更成功', 'success' )
-                        db.session.commit ()
-                    else:
-                        flash ( '变更失败', 'danger' )
-                        db.session.rollback ()
-                    if DEBUGGING:
-                        flash ( r.json (), 'info' )
-                except Exception as e:
-                    if DEBUGGING:
-                        flash ( e, 'danger' )
-                        raise e
-                    db.session.rollback ()
-                    flash ( '中央交易系统端异常', 'danger' )
+                db.session.commit ()
+                flash ( '变更成功，将在明天生效', 'success' )
             else:
                 flash ( '未找到该股票', 'warning' )
             if DEBUGGING:
@@ -157,6 +136,8 @@ def confine():
             pass
         else:
             flash ( "您没有该权限", 'danger' )
+    elif request.method == 'POST':
+        flash ( '输入无效', 'warning' )
     return render_template ( "confine.html", username=current_user.get_id (), stock_list=stock_list, form=form )
 
 
