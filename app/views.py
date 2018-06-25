@@ -120,13 +120,20 @@ def confine():
                 stock.up_confine = form.up_confine.data
                 if stock.down_confine < 0 or stock.up_confine < 0 or stock.down_confine > 100:
                     flash ( '限制不合规', 'warning' )
+                    db.session.rollback ()
+                    stock_list = []
+                    for auth in auth_list:
+                        stock_list.append ( Stock.query.filter_by ( stock_name=auth.stock_id ).first () )
                     return render_template ( "confine.html", username=current_user.get_id (), stock_list=stock_list,
                                              form=form )
                 try:
                     flash ( '请求已发送', 'success' )
                     api_data = request.values.to_dict ()
                     api_data['action'] = 'confine_change'
-                    print ( json.dumps ( api_data ) )
+                    # print ( json.dumps ( api_data ) )
+                    api_data['up_confine'] = float ( api_data['up_confine'] ) / 100
+                    api_data['down_confine'] = float ( api_data['down_confine'] ) / 100
+                    print ( api_data )
                     r = requests.post ( CENTER_API_URL, json=api_data )
                     ans = r.json ()
                     if ans.get ( 'result', None ):
@@ -178,11 +185,11 @@ def trading():
                             print ( json.dumps ( api_data ) )
                             ans = r.json ()
                             if ans.get ( 'result', None ):
-                                flash ( '开启交易成功' )
+                                flash ( '开启交易成功' 'success' )
                                 db.session.commit ()
                             else:
                                 db.session.rollback ()
-                                flash ( '开启交易失败' )
+                                flash ( '开启交易失败', 'danger' )
                             if DEBUGGING:
                                 flash ( r.json (), 'info' )
                         except Exception as e:
